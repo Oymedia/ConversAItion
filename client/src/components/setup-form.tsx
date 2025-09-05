@@ -90,7 +90,7 @@ export default function SetupForm() {
           name="characterProfile"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Character Profile</FormLabel>
+              <FormLabel>Character Profile (Provide as much details as possible for optimum experience)</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Describe the personality, communication style, and traits of the person you'll be talking to..."
@@ -113,7 +113,7 @@ export default function SetupForm() {
           name="topic"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Topic & Situation</FormLabel>
+              <FormLabel>Topic & Situation (Provide as much details as possible for optimum experience)</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Describe the specific situation or topic you need to discuss..."
