@@ -200,14 +200,28 @@ export default function Conversation() {
         />
         
         {/* Main Chat Area */}
-        <ChatInterface 
-          conversation={conversation}
-          scenario={scenario}
-          responseOptions={[]} // Don't pass options here anymore
-          isLoading={respondMutation.isPending}
-        />
+        <div className="flex-1 flex flex-col">
+          <ChatInterface 
+            conversation={conversation}
+            scenario={scenario}
+            responseOptions={[]} // Don't pass options here anymore
+            isLoading={respondMutation.isPending}
+          />
+          
+          {/* Mobile Response Options - Show at bottom on small screens */}
+          {!conversation.isComplete && responseOptions.length > 0 && (
+            <div className="lg:hidden">
+              <ResponseOptions
+                options={responseOptions}
+                onSelect={handleResponseSelect}
+                isLoading={respondMutation.isPending}
+                conversation={conversation}
+              />
+            </div>
+          )}
+        </div>
 
-        {/* Right Panel: Response Options */}
+        {/* Right Panel: Response Options - Desktop only */}
         {!conversation.isComplete && responseOptions.length > 0 && (
           <div className="hidden lg:block w-80 bg-card border-l border-border">
             <ResponseOptions
