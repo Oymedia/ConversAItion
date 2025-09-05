@@ -84,7 +84,7 @@ Return as JSON in this exact format:
 }`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4.1-nano",
+      model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_object" },
       max_tokens: 600,
@@ -108,22 +108,28 @@ Return as JSON in this exact format:
       .map(msg => `${msg.type.toUpperCase()}: ${msg.content}`)
       .join('\n');
 
+    const exchangeCount = conversationHistory.length;
+    const shouldConsiderEnding = exchangeCount >= 6; // Start considering ending after 3 full exchanges
+
     const prompt = `You are roleplaying as a character in a conversation simulation.
 
 Character Profile: ${scenario.characterProfile}
 Situation: ${scenario.topic}  
 User's Goal: ${scenario.goal}
 Purpose: ${scenario.purpose}
+Current Exchange: ${Math.ceil(exchangeCount / 2)} of maximum 7
 
 Conversation History:
 ${historyText}
 
-The user just responded using a ${userApproach} approach. As the character described in the profile, respond naturally to their message. 
+The user just responded using a ${userApproach} approach. As the character described in the profile, respond naturally to their message.
 
 IMPORTANT REACTION GUIDELINES:
 - If they used APPROACH 1: Show openness to compromise but maintain your character's core interests. Move toward finding middle ground.
 - If they used APPROACH 2: React with matching energy - show resistance, pushback, or escalation based on your character. Create tension.
 - If they used APPROACH 3: Respond to their calculated move with your own strategic consideration. This might lead to acceptance, counter-offers, or walking away.
+
+${shouldConsiderEnding ? 'CRITICAL: You are in the later stages of this conversation. Strongly consider if this topic has been sufficiently discussed. If the main points have been covered or if there is little substance left to discuss, you should naturally conclude the conversation with a definitive statement, agreement, disagreement, or decision. Do not artificially extend the conversation.' : 'The conversation is still developing - engage meaningfully with their response.'}
 
 Stay true to the character's personality and motivations. Make the conversation dynamic and realistic, not neutral.
 
@@ -132,12 +138,71 @@ IMPORTANT: Keep your response to a MAXIMUM of 30 words.
 Respond only as the character, no additional formatting.`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4.1-nano",
+      model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 100,
     });
 
     return response.choices[0].message.content || "I understand your perspective.";
+  }
+
+  async shouldEndConversation(
+    scenario: Scenario,
+    conversationHistory: ConversationMessage[],
+    exchangeCount: number
+  ): Promise<{ shouldEnd: boolean; reason: string }> {
+    if (exchangeCount < 3) return { shouldEnd: false, reason: "Too early" }; // Never end before 3 exchanges
+
+    const historyText = conversationHistory
+      .map(msg => `${msg.type.toUpperCase()}: ${msg.content}`)
+      .join('\n');
+
+    const prompt = `Analyze this conversation to determine if it should naturally conclude.
+
+Scenario Context:
+- Purpose: ${scenario.purpose}
+- Character Profile: ${scenario.characterProfile}
+- Topic: ${scenario.topic}
+- User's Goal: ${scenario.goal}
+
+Conversation History (Exchange ${exchangeCount} of max 7):
+${historyText}
+
+Determine if this conversation has reached a natural conclusion point. A conversation should end if:
+1. The main topic has been sufficiently discussed
+2. The character has made a clear final decision/position
+3. Both parties have expressed their views and there's little more to add
+4. An agreement, disagreement, or resolution has been reached
+5. The conversation is becoming repetitive or unproductive
+
+A conversation should NOT end if:
+- There are still important points to discuss
+- The character would realistically continue engaging
+- The user's goal could still be meaningfully pursued
+
+Return JSON in this exact format:
+{
+  "shouldEnd": boolean,
+  "reason": "brief explanation of why it should/shouldn't end"
+}`;
+
+    try {
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        max_tokens: 200,
+      });
+
+      const result = JSON.parse(response.choices[0].message.content || '{"shouldEnd": false, "reason": "Analysis failed"}');
+      return {
+        shouldEnd: result.shouldEnd || false,
+        reason: result.reason || "Analysis unavailable"
+      };
+    } catch (error) {
+      console.error('Error in shouldEndConversation:', error);
+      return { shouldEnd: false, reason: "Error in analysis" };
+    }
   }
 
   async evaluateConversationOutcome(
@@ -170,7 +235,7 @@ Evaluate how well the user achieved their stated goal and provide insights. Retu
 }`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4.1-nano",
+      model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_object" },
       max_tokens: 800,

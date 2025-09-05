@@ -90,7 +90,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         id: randomUUID(),
         type: 'user' as const,
         content,
-        approach: approach as 'diplomatic' | 'assertive' | 'strategic',
+        approach: approach as 'approach1' | 'approach2' | 'approach3',
         timestamp: new Date().toISOString(),
         exchangeNumber: conversation.currentExchange
       };
@@ -111,13 +111,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const finalMessages = [...updatedMessages, aiMessage];
       const newExchangeCount = conversation.currentExchange + 1;
 
-      // Check if conversation should end (7 exchanges or goal achieved)
+      // Check if conversation should end (7 exchanges, natural conclusion, or goal achieved)
       let outcome = undefined;
       let isComplete = 0;
 
       if (newExchangeCount >= 7) {
         outcome = await conversationAI.evaluateConversationOutcome(scenario, finalMessages);
         isComplete = 1;
+      } else {
+        // Check if conversation should naturally conclude early
+        const endAnalysis = await conversationAI.shouldEndConversation(scenario, finalMessages, newExchangeCount);
+        if (endAnalysis.shouldEnd) {
+          outcome = await conversationAI.evaluateConversationOutcome(scenario, finalMessages);
+          isComplete = 1;
+          console.log(`Conversation ended early at exchange ${newExchangeCount}: ${endAnalysis.reason}`);
+        }
       }
 
       // Update conversation
