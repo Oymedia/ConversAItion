@@ -27,6 +27,42 @@ export default function Conversation() {
     refetchOnWindowFocus: false,
   });
 
+  // Move mutation hook to top level to avoid hook order issues
+  const respondMutation = useMutation({
+    mutationFn: async ({ approach, content }: { approach: string; content: string }) => {
+      if (!data?.conversation?.id) throw new Error('No conversation ID');
+      const response = await apiRequest("POST", `/api/conversations/${data.conversation.id}/respond`, {
+        approach,
+        content
+      });
+      return response.json();
+    },
+    onSuccess: (responseData) => {
+      // Update the cache with new conversation data
+      if (data?.conversation?.id) {
+        queryClient.setQueryData(['/api/conversations', data.conversation.id], responseData);
+        
+        // If conversation is complete, redirect to results
+        if (responseData.conversation.isComplete) {
+          setTimeout(() => {
+            setLocation(`/results/${data.conversation.id}`);
+          }, 1000);
+        }
+      }
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to send response. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleResponseSelect = (approach: string, content: string) => {
+    respondMutation.mutate({ approach, content });
+  };
+
 
   if (isLoading) {
     return (
@@ -82,38 +118,6 @@ export default function Conversation() {
   }
 
   const { conversation, scenario, responseOptions } = data;
-
-  const respondMutation = useMutation({
-    mutationFn: async ({ approach, content }: { approach: string; content: string }) => {
-      const response = await apiRequest("POST", `/api/conversations/${conversation.id}/respond`, {
-        approach,
-        content
-      });
-      return response.json();
-    },
-    onSuccess: (data) => {
-      // Update the cache with new conversation data
-      queryClient.setQueryData(['/api/conversations', conversation.id], data);
-      
-      // If conversation is complete, redirect to results
-      if (data.conversation.isComplete) {
-        setTimeout(() => {
-          setLocation(`/results/${conversation.id}`);
-        }, 1000);
-      }
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to send response. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleResponseSelect = (approach: string, content: string) => {
-    respondMutation.mutate({ approach, content });
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
