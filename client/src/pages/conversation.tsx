@@ -1,18 +1,24 @@
-import { useParams } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useParams, useLocation } from "wouter";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import ChatInterface from "@/components/chat-interface";
 import ConversationTree from "@/components/conversation-tree";
+import ResponseOptions from "@/components/response-options";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import type { ConversationResponse } from "@shared/schema";
 
 export default function Conversation() {
   const { id } = useParams<{ id: string }>();
   const isMobile = useIsMobile();
   const [showSidebar, setShowSidebar] = useState(false);
+  const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   const { data, isLoading, error } = useQuery<ConversationResponse>({
     queryKey: ['/api/conversations', id],
@@ -77,6 +83,38 @@ export default function Conversation() {
 
   const { conversation, scenario, responseOptions } = data;
 
+  const respondMutation = useMutation({
+    mutationFn: async ({ approach, content }: { approach: string; content: string }) => {
+      const response = await apiRequest("POST", `/api/conversations/${conversation.id}/respond`, {
+        approach,
+        content
+      });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      // Update the cache with new conversation data
+      queryClient.setQueryData(['/api/conversations', conversation.id], data);
+      
+      // If conversation is complete, redirect to results
+      if (data.conversation.isComplete) {
+        setTimeout(() => {
+          setLocation(`/results/${conversation.id}`);
+        }, 1000);
+      }
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to send response. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleResponseSelect = (approach: string, content: string) => {
+    respondMutation.mutate({ approach, content });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
@@ -108,12 +146,12 @@ export default function Conversation() {
                 <div className="w-32 bg-secondary rounded-full h-2">
                   <div 
                     className="bg-primary h-2 rounded-full transition-all duration-300" 
-                    style={{ width: `${(conversation.currentExchange / 10) * 100}%` }}
+                    style={{ width: `${(conversation.currentExchange / 7) * 100}%` }}
                     data-testid="progress-bar"
                   ></div>
                 </div>
                 <span className="text-sm font-medium text-muted-foreground" data-testid="text-progress">
-                  {conversation.currentExchange}/10
+                  {conversation.currentExchange}/7
                 </span>
               </div>
             </div>
@@ -135,12 +173,12 @@ export default function Conversation() {
           <div className="sm:hidden mt-4">
             <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
               <span>Progress</span>
-              <span data-testid="text-mobile-progress">{conversation.currentExchange}/10</span>
+              <span data-testid="text-mobile-progress">{conversation.currentExchange}/7</span>
             </div>
             <div className="w-full bg-secondary rounded-full h-2">
               <div 
                 className="bg-primary h-2 rounded-full transition-all duration-300" 
-                style={{ width: `${(conversation.currentExchange / 10) * 100}%` }}
+                style={{ width: `${(conversation.currentExchange / 7) * 100}%` }}
                 data-testid="progress-bar-mobile"
               ></div>
             </div>
@@ -148,8 +186,8 @@ export default function Conversation() {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto flex h-[calc(100vh-120px)]">
-        {/* Sidebar: Conversation Tree */}
+      <div className="max-w-7xl mx-auto flex h-[calc(100vh-120px)]">
+        {/* Left Sidebar: Conversation Tree */}
         <ConversationTree 
           conversation={conversation}
           scenario={scenario}
@@ -161,8 +199,21 @@ export default function Conversation() {
         <ChatInterface 
           conversation={conversation}
           scenario={scenario}
-          responseOptions={responseOptions}
+          responseOptions={[]} // Don't pass options here anymore
+          isLoading={respondMutation.isPending}
         />
+
+        {/* Right Panel: Response Options */}
+        {!conversation.isComplete && responseOptions.length > 0 && (
+          <div className="hidden lg:block w-80 bg-card border-l border-border">
+            <ResponseOptions
+              options={responseOptions}
+              onSelect={handleResponseSelect}
+              isLoading={respondMutation.isPending}
+              conversation={conversation}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

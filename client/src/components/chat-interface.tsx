@@ -1,22 +1,15 @@
 import { useEffect, useRef } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocation } from "wouter";
-import { apiRequest } from "@/lib/queryClient";
-import ResponseOptions from "./response-options";
 import type { Conversation, Scenario, ResponseOption } from "@shared/schema";
-import { useToast } from "@/hooks/use-toast";
 
 interface ChatInterfaceProps {
   conversation: Conversation;
   scenario: Scenario;
   responseOptions: ResponseOption[];
+  isLoading?: boolean;
 }
 
-export default function ChatInterface({ conversation, scenario, responseOptions }: ChatInterfaceProps) {
+export default function ChatInterface({ conversation, scenario, responseOptions, isLoading = false }: ChatInterfaceProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const queryClient = useQueryClient();
-  const [, setLocation] = useLocation();
-  const { toast } = useToast();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -25,38 +18,6 @@ export default function ChatInterface({ conversation, scenario, responseOptions 
   useEffect(() => {
     scrollToBottom();
   }, [conversation.messages]);
-
-  const respondMutation = useMutation({
-    mutationFn: async ({ approach, content }: { approach: string; content: string }) => {
-      const response = await apiRequest("POST", `/api/conversations/${conversation.id}/respond`, {
-        approach,
-        content
-      });
-      return response.json();
-    },
-    onSuccess: (data) => {
-      // Update the cache with new conversation data
-      queryClient.setQueryData(['/api/conversations', conversation.id], data);
-      
-      // If conversation is complete, redirect to results
-      if (data.conversation.isComplete) {
-        setTimeout(() => {
-          setLocation(`/results/${conversation.id}`);
-        }, 1000);
-      }
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to send response. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleResponseSelect = (approach: string, content: string) => {
-    respondMutation.mutate({ approach, content });
-  };
 
   return (
     <main className="flex-1 flex flex-col">
@@ -108,7 +69,7 @@ export default function ChatInterface({ conversation, scenario, responseOptions 
           </div>
         ))}
         
-        {respondMutation.isPending && (
+        {isLoading && (
           <div className="flex items-start space-x-3">
             <div className="flex-shrink-0">
               <div className="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center">
@@ -126,15 +87,7 @@ export default function ChatInterface({ conversation, scenario, responseOptions 
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Response Options */}
-      {!conversation.isComplete && responseOptions.length > 0 && (
-        <ResponseOptions
-          options={responseOptions}
-          onSelect={handleResponseSelect}
-          isLoading={respondMutation.isPending}
-          conversation={conversation}
-        />
-      )}
+      {/* Response Options are now in the right panel */}
     </main>
   );
 }

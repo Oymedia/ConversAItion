@@ -19,6 +19,8 @@ Purpose of conversation: ${scenario.purpose}
 
 As this character, start the conversation naturally based on the situation described. Keep it realistic and in character. The user wants to practice this conversation, so make it challenging but fair. Respond as if you are the character in this situation.
 
+IMPORTANT: Keep your response to a MAXIMUM of 30 words.
+
 Return only the character's opening message, no additional formatting.`;
 
       const response = await openai.chat.completions.create({
@@ -116,12 +118,14 @@ The user just responded using a ${userApproach} approach. As the character descr
 - Keep the response conversational and realistic
 - Challenge the user appropriately based on the character profile
 
+IMPORTANT: Keep your response to a MAXIMUM of 30 words.
+
 Respond only as the character, no additional formatting.`;
 
     const response = await openai.chat.completions.create({
       model: "gpt-4.1-nano",
       messages: [{ role: "user", content: prompt }],
-      max_tokens: 400,
+      max_tokens: 100,
     });
 
     return response.choices[0].message.content || "I understand your perspective.";

@@ -111,11 +111,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const finalMessages = [...updatedMessages, aiMessage];
       const newExchangeCount = conversation.currentExchange + 1;
 
-      // Check if conversation should end (10 exchanges or goal achieved)
+      // Check if conversation should end (7 exchanges or goal achieved)
       let outcome = undefined;
       let isComplete = 0;
 
-      if (newExchangeCount >= 10) {
+      if (newExchangeCount >= 7) {
         outcome = await conversationAI.evaluateConversationOutcome(scenario, finalMessages);
         isComplete = 1;
       }
