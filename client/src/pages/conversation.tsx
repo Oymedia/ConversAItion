@@ -213,10 +213,10 @@ export default function Conversation() {
               <Button 
                 onClick={handleAnalyzeConversation}
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                data-testid="button-analyze-mobile"
+                data-testid="button-view-results-mobile"
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
-                Analyze Conversation
+                View Results
               </Button>
             </div>
           ) : responseOptions.length > 0 && (
@@ -237,15 +237,15 @@ export default function Conversation() {
             <div className="p-6 flex flex-col items-center justify-center h-full space-y-4">
               <div className="text-center space-y-2">
                 <h3 className="text-lg font-semibold text-foreground">Conversation Complete</h3>
-                <p className="text-sm text-muted-foreground">Ready to analyze your conversation performance</p>
+                <p className="text-sm text-muted-foreground">Review your conversation and see the results</p>
               </div>
               <Button 
                 onClick={handleAnalyzeConversation}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                data-testid="button-analyze-desktop"
+                data-testid="button-view-results-desktop"
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
-                Analyze Conversation
+                View Results
               </Button>
             </div>
           </div>
