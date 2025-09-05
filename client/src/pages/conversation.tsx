@@ -7,7 +7,8 @@ import ResponseOptions from "@/components/response-options";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AlertCircle, BarChart3 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { ConversationResponse } from "@shared/schema";
@@ -41,13 +42,7 @@ export default function Conversation() {
       // Update the cache with new conversation data
       if (data?.conversation?.id) {
         queryClient.setQueryData(['/api/conversations', data.conversation.id], responseData);
-        
-        // If conversation is complete, redirect to results
-        if (responseData.conversation.isComplete) {
-          setTimeout(() => {
-            setLocation(`/results/${data.conversation.id}`);
-          }, 1000);
-        }
+        // Note: Removed automatic redirect to results - user will click "Analyze Conversation" button instead
       }
     },
     onError: (error) => {
@@ -61,6 +56,10 @@ export default function Conversation() {
 
   const handleResponseSelect = (approach: string, content: string) => {
     respondMutation.mutate({ approach, content });
+  };
+
+  const handleAnalyzeConversation = () => {
+    setLocation(`/results/${data?.conversation?.id}`);
   };
 
 
@@ -208,8 +207,19 @@ export default function Conversation() {
             isLoading={respondMutation.isPending}
           />
           
-          {/* Mobile Response Options - Show at bottom on small screens */}
-          {!conversation.isComplete && responseOptions.length > 0 && (
+          {/* Mobile Response Options or Analyze Button - Show at bottom on small screens */}
+          {conversation.isComplete ? (
+            <div className="lg:hidden p-4 bg-card border-t border-border">
+              <Button 
+                onClick={handleAnalyzeConversation}
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                data-testid="button-analyze-mobile"
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                Analyze Conversation
+              </Button>
+            </div>
+          ) : responseOptions.length > 0 && (
             <div className="lg:hidden">
               <ResponseOptions
                 options={responseOptions}
@@ -221,8 +231,25 @@ export default function Conversation() {
           )}
         </div>
 
-        {/* Right Panel: Response Options - Desktop only */}
-        {!conversation.isComplete && responseOptions.length > 0 && (
+        {/* Right Panel: Response Options or Analyze Button - Desktop only */}
+        {conversation.isComplete ? (
+          <div className="hidden lg:block w-80 bg-card border-l border-border flex flex-col h-full">
+            <div className="p-6 flex flex-col items-center justify-center h-full space-y-4">
+              <div className="text-center space-y-2">
+                <h3 className="text-lg font-semibold text-foreground">Conversation Complete</h3>
+                <p className="text-sm text-muted-foreground">Ready to analyze your conversation performance</p>
+              </div>
+              <Button 
+                onClick={handleAnalyzeConversation}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                data-testid="button-analyze-desktop"
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                Analyze Conversation
+              </Button>
+            </div>
+          </div>
+        ) : responseOptions.length > 0 && (
           <div className="hidden lg:block w-80 bg-card border-l border-border flex flex-col h-full">
             <ResponseOptions
               options={responseOptions}
