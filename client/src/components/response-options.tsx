@@ -90,13 +90,12 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
   };
 
   return (
-    <div className="border-t border-border bg-card p-4 max-h-full overflow-y-auto">
-      <div className="space-y-4">
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">Choose your response approach:</p>
-        </div>
-        
-        <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+    <div className="flex flex-col h-full p-4">
+      <div className="text-center mb-4">
+        <p className="text-sm text-muted-foreground">Choose your response approach:</p>
+      </div>
+      
+      <div className="flex-1 space-y-3 overflow-y-auto pr-2">
           {options.map((option) => {
             const styles = getApproachStyles(option.approach);
             const icon = getApproachIcon(option.approach);
@@ -104,25 +103,25 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
             return (
               <button
                 key={option.approach}
-                className={`response-option ${styles.container} rounded-xl p-4 text-left transition-all focus:ring-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed w-full break-words`}
+                className={`response-option ${styles.container} rounded-xl p-3 text-left transition-all focus:ring-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed w-full break-words block`}
                 onClick={() => onSelect(option.approach, option.content)}
                 disabled={isLoading}
                 data-testid={`button-response-${option.approach}`}
               >
-                <div className="flex items-center space-x-3 mb-3">
-                  <div className={`w-8 h-8 ${styles.icon} rounded-full flex items-center justify-center`}>
-                    <i className={`${icon} text-sm`}></i>
+                <div className="flex items-center space-x-2 mb-2">
+                  <div className={`w-6 h-6 ${styles.icon} rounded-full flex items-center justify-center flex-shrink-0`}>
+                    <i className={`${icon} text-xs`}></i>
                   </div>
-                  <div>
-                    <div className={`font-medium ${styles.title}`}>
+                  <div className="min-w-0 flex-1">
+                    <div className={`font-medium ${styles.title} text-sm`}>
                       {option.approach.charAt(0).toUpperCase() + option.approach.slice(1)}
                     </div>
-                    <div className={`text-xs ${styles.subtitle}`}>
+                    <div className={`text-xs ${styles.subtitle} truncate`}>
                       {option.description}
                     </div>
                   </div>
                 </div>
-                <p className={`text-sm ${styles.content} leading-relaxed break-words`}>
+                <p className={`text-xs ${styles.content} leading-relaxed break-words overflow-hidden`}>
                   {option.content}
                 </p>
               </button>
@@ -144,7 +143,6 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
             </button>
           </div>
         )}
-      </div>
     </div>
   );
 }

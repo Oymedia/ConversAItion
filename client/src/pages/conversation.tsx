@@ -223,7 +223,7 @@ export default function Conversation() {
 
         {/* Right Panel: Response Options - Desktop only */}
         {!conversation.isComplete && responseOptions.length > 0 && (
-          <div className="hidden lg:block w-80 bg-card border-l border-border">
+          <div className="hidden lg:block w-80 bg-card border-l border-border flex flex-col h-full">
             <ResponseOptions
               options={responseOptions}
               onSelect={handleResponseSelect}
