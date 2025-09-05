@@ -90,13 +90,13 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
   };
 
   return (
-    <div className="border-t border-border bg-card p-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-4 text-center">
+    <div className="border-t border-border bg-card p-4 h-full overflow-y-auto">
+      <div className="space-y-4">
+        <div className="text-center">
           <p className="text-sm text-muted-foreground">Choose your response approach:</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="space-y-3">
           {options.map((option) => {
             const styles = getApproachStyles(option.approach);
             const icon = getApproachIcon(option.approach);
