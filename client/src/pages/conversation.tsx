@@ -17,6 +17,8 @@ export default function Conversation() {
   const { data, isLoading, error } = useQuery<ConversationResponse>({
     queryKey: ['/api/conversations', id],
     enabled: !!id,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 
   if (isLoading) {
@@ -33,7 +35,7 @@ export default function Conversation() {
     );
   }
 
-  if (error || !data) {
+  if (error || !data || !data.conversation || !data.scenario) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
         <Alert className="max-w-md">
@@ -65,7 +67,7 @@ export default function Conversation() {
               </button>
               <div>
                 <h2 className="text-lg font-semibold text-foreground" data-testid="text-scenario-purpose">
-                  {scenario.purpose}
+                  {scenario?.purpose || 'Conversation Practice'}
                 </h2>
                 <p className="text-sm text-muted-foreground">
                   AI Character: <span data-testid="text-character-type">Character Simulation</span>
