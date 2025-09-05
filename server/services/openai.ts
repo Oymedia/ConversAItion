@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { type ConversationMessage, type ResponseOption, type ConversationOutcome, type Scenario } from "@shared/schema";
 
-// Using GPT-4 as the latest available model
+// Using GPT-4.1-nano as requested by user
 const openai = new OpenAI({ 
   apiKey: process.env.OPENAI_API_KEY || "your-api-key-here"
 });
@@ -21,7 +21,7 @@ As this character, start the conversation naturally based on the situation descr
 Return only the character's opening message, no additional formatting.`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4.1-nano",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 300,
     });
@@ -70,7 +70,7 @@ Each response should be realistic and appropriate for the situation. Return as J
 }`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4.1-nano",
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_object" },
       max_tokens: 600,
@@ -114,7 +114,7 @@ The user just responded using a ${userApproach} approach. As the character descr
 Respond only as the character, no additional formatting.`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4.1-nano",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 400,
     });
@@ -152,7 +152,7 @@ Evaluate how well the user achieved their stated goal and provide insights. Retu
 }`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4.1-nano",
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_object" },
       max_tokens: 800,
