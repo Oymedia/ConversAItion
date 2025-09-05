@@ -60,6 +60,8 @@ Generate 3 different response options for the user representing different commun
 2. Assertive - Direct, firm, standing up for boundaries while remaining professional  
 3. Strategic - Value-focused, logical reasoning, focusing on mutual benefits
 
+IMPORTANT: Each response option must be MAXIMUM 30 words. Keep them concise and impactful.
+
 Each response should be realistic and appropriate for the situation. Return as JSON in this exact format:
 {
   "diplomatic": {

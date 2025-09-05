@@ -90,13 +90,13 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
   };
 
   return (
-    <div className="border-t border-border bg-card p-4 h-full overflow-y-auto">
+    <div className="border-t border-border bg-card p-4 max-h-full overflow-y-auto">
       <div className="space-y-4">
         <div className="text-center">
           <p className="text-sm text-muted-foreground">Choose your response approach:</p>
         </div>
         
-        <div className="space-y-3">
+        <div className="space-y-3 max-h-[60vh] overflow-y-auto">
           {options.map((option) => {
             const styles = getApproachStyles(option.approach);
             const icon = getApproachIcon(option.approach);
@@ -104,7 +104,7 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
             return (
               <button
                 key={option.approach}
-                className={`response-option ${styles.container} rounded-xl p-4 text-left transition-all focus:ring-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed`}
+                className={`response-option ${styles.container} rounded-xl p-4 text-left transition-all focus:ring-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed w-full break-words`}
                 onClick={() => onSelect(option.approach, option.content)}
                 disabled={isLoading}
                 data-testid={`button-response-${option.approach}`}
@@ -122,7 +122,7 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
                     </div>
                   </div>
                 </div>
-                <p className={`text-sm ${styles.content}`}>
+                <p className={`text-sm ${styles.content} leading-relaxed break-words`}>
                   {option.content}
                 </p>
               </button>
