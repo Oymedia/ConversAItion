@@ -136,6 +136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         conversation: updatedConversation,
+        scenario,
         responseOptions
       });
     } catch (error) {
@@ -204,6 +205,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         conversation: updatedConversation,
+        scenario,
         responseOptions
       });
     } catch (error) {

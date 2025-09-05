@@ -21,6 +21,7 @@ export default function Conversation() {
     refetchOnWindowFocus: false,
   });
 
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -35,13 +36,39 @@ export default function Conversation() {
     );
   }
 
-  if (error || !data || !data.conversation || !data.scenario) {
+  if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
         <Alert className="max-w-md">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             Failed to load conversation. Please try again.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+        <Alert className="max-w-md">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            No conversation data received. Please try again.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  if (!data.conversation || !data.scenario) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+        <Alert className="max-w-md">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Incomplete conversation data. Please try refreshing.
           </AlertDescription>
         </Alert>
       </div>
