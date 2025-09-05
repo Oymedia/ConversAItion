@@ -55,26 +55,31 @@ Scenario Context:
 Conversation History:
 ${historyText}
 
-Generate 3 different response options for the user representing different communication approaches:
-1. Diplomatic - Collaborative, relationship-focused, seeking common ground
-2. Assertive - Direct, firm, standing up for boundaries while remaining professional  
-3. Strategic - Value-focused, logical reasoning, focusing on mutual benefits
+Generate 3 distinctly different response options that create varied conversation dynamics and outcomes:
+
+1. **Diplomatic** - Collaborative, seeks compromise and mutual understanding. This approach should lead toward RESOLUTION and finding middle ground.
+
+2. **Assertive** - Direct, firm, potentially confrontational. This approach should escalate the situation or create TENSION/DISPUTE, making the conversation more challenging.
+
+3. **Strategic** - Calculated, focused on specific goals, may involve ultimatums or walking away. This approach should create CLEAR CONSEQUENCES or DECISIVE ACTIONS that change the conversation's direction.
+
+Each response must create a DIFFERENT conversation trajectory - one toward resolution, one toward conflict, one toward decisive action/conclusion.
 
 CRITICAL REQUIREMENT: Each response option MUST be exactly 20-30 words maximum. Count the words carefully. If any response exceeds 30 words, it will be rejected. Be extremely concise and impactful.
 
-Each response should be realistic and appropriate for the situation. Return as JSON in this exact format:
+Return as JSON in this exact format:
 {
   "diplomatic": {
-    "content": "the diplomatic response text",
-    "description": "Collaborative approach"
+    "content": "the diplomatic response text that seeks compromise",
+    "description": "Seeks resolution"
   },
   "assertive": {
-    "content": "the assertive response text", 
-    "description": "Direct and firm"
+    "content": "the assertive response text that creates tension", 
+    "description": "Creates conflict"
   },
   "strategic": {
-    "content": "the strategic response text",
-    "description": "Value-focused reasoning"
+    "content": "the strategic response text with clear consequences",
+    "description": "Decisive action"
   }
 }`;
 
@@ -88,9 +93,9 @@ Each response should be realistic and appropriate for the situation. Return as J
     const options = JSON.parse(response.choices[0].message.content || "{}");
     
     return [
-      { approach: 'diplomatic', content: options.diplomatic?.content || "", description: options.diplomatic?.description || "Collaborative approach" },
-      { approach: 'assertive', content: options.assertive?.content || "", description: options.assertive?.description || "Direct and firm" },
-      { approach: 'strategic', content: options.strategic?.content || "", description: options.strategic?.description || "Value-focused reasoning" }
+      { approach: 'diplomatic', content: options.diplomatic?.content || "", description: options.diplomatic?.description || "Seeks resolution" },
+      { approach: 'assertive', content: options.assertive?.content || "", description: options.assertive?.description || "Creates conflict" },
+      { approach: 'strategic', content: options.strategic?.content || "", description: options.strategic?.description || "Decisive action" }
     ];
   }
 
@@ -113,12 +118,14 @@ Purpose: ${scenario.purpose}
 Conversation History:
 ${historyText}
 
-The user just responded using a ${userApproach} approach. As the character described in the profile, respond naturally to their message. Consider:
-- How would this character personality react to this approach?
-- Stay true to the character's motivations and communication style
-- Make the conversation progress toward a realistic resolution
-- Keep the response conversational and realistic
-- Challenge the user appropriately based on the character profile
+The user just responded using a ${userApproach} approach. As the character described in the profile, respond naturally to their message. 
+
+IMPORTANT REACTION GUIDELINES:
+- If they used DIPLOMATIC approach: Show openness to compromise but maintain your character's core interests. Move toward finding middle ground.
+- If they used ASSERTIVE approach: React with matching energy - show resistance, pushback, or escalation based on your character. Create tension.
+- If they used STRATEGIC approach: Respond to their calculated move with your own strategic consideration. This might lead to acceptance, counter-offers, or walking away.
+
+Stay true to the character's personality and motivations. Make the conversation dynamic and realistic, not neutral.
 
 IMPORTANT: Keep your response to a MAXIMUM of 30 words.
 
