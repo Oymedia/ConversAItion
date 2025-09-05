@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { type ConversationMessage, type ResponseOption, type ConversationOutcome, type Scenario } from "@shared/schema";
 
-// Using GPT-4.1-nano as requested by user
+// Using GPT-4o as requested by user
 const openai = new OpenAI({ 
   apiKey: process.env.OPENAI_API_KEY || "your-api-key-here"
 });
@@ -24,7 +24,7 @@ IMPORTANT: Keep your response to a MAXIMUM of 30 words.
 Return only the character's opening message, no additional formatting.`;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4.1-nano",
+        model: "gpt-4o",
         messages: [{ role: "user", content: prompt }],
         max_tokens: 300,
       });
