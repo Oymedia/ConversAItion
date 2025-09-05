@@ -10,14 +10,20 @@ export class ConversationAI {
   
   async generateInitialMessage(scenario: Scenario): Promise<string> {
     try {
-      const prompt = `You are roleplaying as a character in a conversation simulation. 
+      const prompt = `CRITICAL: You are roleplaying as a specific character. You are NOT the user. You are the OTHER person in this conversation.
 
-Character Profile: ${scenario.characterProfile}
-Situation: ${scenario.topic}
-The user's goal: ${scenario.goal}
-Purpose of conversation: ${scenario.purpose}
+CHARACTER YOU ARE PLAYING: ${scenario.characterProfile}
+SITUATION: ${scenario.topic}
+THE USER'S GOAL (not yours): ${scenario.goal}
+CONVERSATION PURPOSE: ${scenario.purpose}
 
-As this character, start the conversation naturally based on the situation described. Keep it realistic and in character. The user wants to practice this conversation, so make it challenging but fair. Respond as if you are the character in this situation.
+REMEMBER:
+- YOU are the character described in the profile
+- The USER is someone else trying to achieve their goal
+- NEVER speak as the user or adopt their perspective
+- Stay true to your character's personality, motivations, and interests
+
+As this specific character, start the conversation naturally based on the situation. The user wants to practice this conversation with you, so be realistic and stay in character. Respond as the character would in this situation.
 
 IMPORTANT: Keep your response to a MAXIMUM of 30 words.
 
@@ -111,31 +117,36 @@ Return as JSON in this exact format:
     const exchangeCount = conversationHistory.length;
     const shouldConsiderEnding = exchangeCount >= 6; // Start considering ending after 3 full exchanges
 
-    const prompt = `You are roleplaying as a character in a conversation simulation.
+    const prompt = `CRITICAL: You are roleplaying as a specific character. You are NOT the user. You are the OTHER person in this conversation.
 
-Character Profile: ${scenario.characterProfile}
-Situation: ${scenario.topic}  
-User's Goal: ${scenario.goal}
-Purpose: ${scenario.purpose}
+CHARACTER YOU ARE PLAYING: ${scenario.characterProfile}
+SITUATION: ${scenario.topic}  
+THE USER'S GOAL (not yours): ${scenario.goal}
+CONVERSATION PURPOSE: ${scenario.purpose}
 Current Exchange: ${Math.ceil(exchangeCount / 2)} of maximum 7
 
 Conversation History:
 ${historyText}
 
-The user just responded using a ${userApproach} approach. As the character described in the profile, respond naturally to their message.
+REMEMBER: 
+- YOU are the character described in the profile
+- The USER is the other person trying to achieve their goal
+- NEVER speak as if you are the user
+- NEVER adopt the user's perspective or goals as your own
+- Stay consistent with your character's personality and motivations
 
-IMPORTANT REACTION GUIDELINES:
+The user just responded using a ${userApproach} approach. As the CHARACTER (not as the user), respond naturally to their message.
+
+REACTION GUIDELINES:
 - If they used APPROACH 1: Show openness to compromise but maintain your character's core interests. Move toward finding middle ground.
 - If they used APPROACH 2: React with matching energy - show resistance, pushback, or escalation based on your character. Create tension.
 - If they used APPROACH 3: Respond to their calculated move with your own strategic consideration. This might lead to acceptance, counter-offers, or walking away.
 
 ${shouldConsiderEnding ? 'CRITICAL: You are in the later stages of this conversation. Strongly consider if this topic has been sufficiently discussed. If the main points have been covered or if there is little substance left to discuss, you should naturally conclude the conversation with a definitive statement, agreement, disagreement, or decision. Do not artificially extend the conversation.' : 'The conversation is still developing - engage meaningfully with their response.'}
 
-Stay true to the character's personality and motivations. Make the conversation dynamic and realistic, not neutral.
-
 IMPORTANT: Keep your response to a MAXIMUM of 30 words.
 
-Respond only as the character, no additional formatting.`;
+Respond ONLY as the character (not the user), no additional formatting.`;
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
