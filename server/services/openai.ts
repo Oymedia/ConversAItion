@@ -57,11 +57,11 @@ ${historyText}
 
 Generate 3 distinctly different response options that create varied conversation dynamics and outcomes:
 
-1. **Diplomatic** - Collaborative, seeks compromise and mutual understanding. This approach should lead toward RESOLUTION and finding middle ground.
+1. **Approach 1** - Collaborative, seeks compromise and mutual understanding. This approach should lead toward RESOLUTION and finding middle ground.
 
-2. **Assertive** - Direct, firm, potentially confrontational. This approach should escalate the situation or create TENSION/DISPUTE, making the conversation more challenging.
+2. **Approach 2** - Direct, firm, potentially confrontational. This approach should escalate the situation or create TENSION/DISPUTE, making the conversation more challenging.
 
-3. **Strategic** - Calculated, focused on specific goals, may involve ultimatums or walking away. This approach should create CLEAR CONSEQUENCES or DECISIVE ACTIONS that change the conversation's direction.
+3. **Approach 3** - Calculated, focused on specific goals, may involve ultimatums or walking away. This approach should create CLEAR CONSEQUENCES or DECISIVE ACTIONS that change the conversation's direction.
 
 Each response must create a DIFFERENT conversation trajectory - one toward resolution, one toward conflict, one toward decisive action/conclusion.
 
@@ -69,16 +69,16 @@ CRITICAL REQUIREMENT: Each response option MUST be exactly 20-30 words maximum. 
 
 Return as JSON in this exact format:
 {
-  "diplomatic": {
-    "content": "the diplomatic response text that seeks compromise",
+  "approach1": {
+    "content": "the approach 1 response text that seeks compromise",
     "description": "Seeks resolution"
   },
-  "assertive": {
-    "content": "the assertive response text that creates tension", 
+  "approach2": {
+    "content": "the approach 2 response text that creates tension", 
     "description": "Creates conflict"
   },
-  "strategic": {
-    "content": "the strategic response text with clear consequences",
+  "approach3": {
+    "content": "the approach 3 response text with clear consequences",
     "description": "Decisive action"
   }
 }`;
@@ -93,9 +93,9 @@ Return as JSON in this exact format:
     const options = JSON.parse(response.choices[0].message.content || "{}");
     
     return [
-      { approach: 'diplomatic', content: options.diplomatic?.content || "", description: options.diplomatic?.description || "Seeks resolution" },
-      { approach: 'assertive', content: options.assertive?.content || "", description: options.assertive?.description || "Creates conflict" },
-      { approach: 'strategic', content: options.strategic?.content || "", description: options.strategic?.description || "Decisive action" }
+      { approach: 'approach1', content: options.approach1?.content || "", description: options.approach1?.description || "Seeks resolution" },
+      { approach: 'approach2', content: options.approach2?.content || "", description: options.approach2?.description || "Creates conflict" },
+      { approach: 'approach3', content: options.approach3?.content || "", description: options.approach3?.description || "Decisive action" }
     ];
   }
 
@@ -121,9 +121,9 @@ ${historyText}
 The user just responded using a ${userApproach} approach. As the character described in the profile, respond naturally to their message. 
 
 IMPORTANT REACTION GUIDELINES:
-- If they used DIPLOMATIC approach: Show openness to compromise but maintain your character's core interests. Move toward finding middle ground.
-- If they used ASSERTIVE approach: React with matching energy - show resistance, pushback, or escalation based on your character. Create tension.
-- If they used STRATEGIC approach: Respond to their calculated move with your own strategic consideration. This might lead to acceptance, counter-offers, or walking away.
+- If they used APPROACH 1: Show openness to compromise but maintain your character's core interests. Move toward finding middle ground.
+- If they used APPROACH 2: React with matching energy - show resistance, pushback, or escalation based on your character. Create tension.
+- If they used APPROACH 3: Respond to their calculated move with your own strategic consideration. This might lead to acceptance, counter-offers, or walking away.
 
 Stay true to the character's personality and motivations. Make the conversation dynamic and realistic, not neutral.
 

@@ -57,13 +57,13 @@ export interface ConversationMessage {
   id: string;
   type: 'ai' | 'user';
   content: string;
-  approach?: 'diplomatic' | 'assertive' | 'strategic';
+  approach?: 'approach1' | 'approach2' | 'approach3';
   timestamp: string;
   exchangeNumber: number;
 }
 
 export interface ResponseOption {
-  approach: 'diplomatic' | 'assertive' | 'strategic';
+  approach: 'approach1' | 'approach2' | 'approach3';
   content: string;
   description: string;
 }

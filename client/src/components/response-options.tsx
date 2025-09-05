@@ -41,7 +41,7 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
 
   const getApproachStyles = (approach: string) => {
     switch (approach) {
-      case 'diplomatic':
+      case 'approach1':
         return {
           container: "bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 hover:border-blue-300 focus:ring-blue-500",
           icon: "bg-blue-500 text-white",
@@ -49,7 +49,7 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
           subtitle: "text-blue-600",
           content: "text-blue-800"
         };
-      case 'assertive':
+      case 'approach2':
         return {
           container: "bg-orange-50 hover:bg-orange-100 border-2 border-orange-200 hover:border-orange-300 focus:ring-orange-500",
           icon: "bg-orange-500 text-white",
@@ -57,7 +57,7 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
           subtitle: "text-orange-600",
           content: "text-orange-800"
         };
-      case 'strategic':
+      case 'approach3':
         return {
           container: "bg-green-50 hover:bg-green-100 border-2 border-green-200 hover:border-green-300 focus:ring-green-500",
           icon: "bg-green-500 text-white",
@@ -78,11 +78,11 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
 
   const getApproachIcon = (approach: string) => {
     switch (approach) {
-      case 'diplomatic':
+      case 'approach1':
         return "fas fa-handshake";
-      case 'assertive':
+      case 'approach2':
         return "fas fa-shield-alt";
-      case 'strategic':
+      case 'approach3':
         return "fas fa-chess";
       default:
         return "fas fa-comment";
@@ -114,7 +114,9 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className={`font-medium ${styles.title} text-sm`}>
-                      {option.approach.charAt(0).toUpperCase() + option.approach.slice(1)}
+                      {option.approach === 'approach1' ? 'Approach 1' : 
+                       option.approach === 'approach2' ? 'Approach 2' : 
+                       'Approach 3'}
                     </div>
                     <div className={`text-xs ${styles.subtitle} truncate`}>
                       {option.description}
