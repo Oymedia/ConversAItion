@@ -146,6 +146,52 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
               </button>
             );
           })}
+          
+          {/* Custom Response Section */}
+          <div className="mt-4 space-y-3">
+            <div className="text-center">
+              <button
+                onClick={handleToggleCustomInput}
+                disabled={isLoading}
+                className="text-sm text-muted-foreground hover:text-foreground underline disabled:opacity-50"
+                data-testid="button-toggle-custom"
+              >
+                {showCustomInput ? "Hide custom response" : "Write your own response"}
+              </button>
+            </div>
+            
+            {showCustomInput && (
+              <div className="space-y-3 p-3 bg-gray-50 rounded-lg border">
+                <Textarea
+                  placeholder="Type your own response..."
+                  value={customResponse}
+                  onChange={(e) => setCustomResponse(e.target.value)}
+                  disabled={isLoading}
+                  rows={3}
+                  className="resize-none"
+                  data-testid="textarea-custom-response"
+                />
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleCustomSubmit}
+                    disabled={isLoading || !customResponse.trim()}
+                    className="flex-1"
+                    data-testid="button-submit-custom"
+                  >
+                    Send Custom Response
+                  </Button>
+                  <Button
+                    onClick={handleToggleCustomInput}
+                    variant="outline"
+                    disabled={isLoading}
+                    data-testid="button-cancel-custom"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         
         {/* Back Button */}
