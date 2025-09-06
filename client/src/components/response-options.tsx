@@ -118,9 +118,6 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
                        option.approach === 'approach2' ? 'Approach 2' : 
                        'Approach 3'}
                     </div>
-                    <div className={`text-xs ${styles.subtitle} truncate`}>
-                      {option.description}
-                    </div>
                   </div>
                 </div>
                 <p className={`text-xs ${styles.content} leading-relaxed break-words overflow-hidden`}>
