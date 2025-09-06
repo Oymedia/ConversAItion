@@ -97,8 +97,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const updatedMessages = [...conversation.messages, userMessage];
 
-      // Generate AI response
-      const aiResponse = await conversationAI.generateAIResponse(scenario, updatedMessages, approach);
+      // Generate AI response with error handling
+      let aiResponse;
+      try {
+        aiResponse = await conversationAI.generateAIResponse(scenario, updatedMessages, approach);
+      } catch (error) {
+        console.error('Error generating AI response:', error);
+        // Fallback response if AI generation fails
+        aiResponse = "I understand your point. Let me think about this situation.";
+      }
       
       const aiMessage = {
         id: randomUUID(),
@@ -118,13 +125,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (newExchangeCount >= 7) {
         outcome = await conversationAI.evaluateConversationOutcome(scenario, finalMessages);
         isComplete = 1;
-      } else {
-        // Check if conversation should naturally conclude early
-        const endAnalysis = await conversationAI.shouldEndConversation(scenario, finalMessages, newExchangeCount);
-        if (endAnalysis.shouldEnd) {
-          outcome = await conversationAI.evaluateConversationOutcome(scenario, finalMessages);
-          isComplete = 1;
-          console.log(`Conversation ended early at exchange ${newExchangeCount}: ${endAnalysis.reason}`);
+      } else if (newExchangeCount >= 4) {
+        // Only check for early ending after exchange 4 to reduce API calls
+        try {
+          const endAnalysis = await conversationAI.shouldEndConversation(scenario, finalMessages, newExchangeCount);
+          if (endAnalysis.shouldEnd) {
+            outcome = await conversationAI.evaluateConversationOutcome(scenario, finalMessages);
+            isComplete = 1;
+            console.log(`Conversation ended early at exchange ${newExchangeCount}: ${endAnalysis.reason}`);
+          }
+        } catch (error) {
+          console.error('Error in early ending analysis:', error);
+          // Continue conversation if analysis fails
         }
       }
 
@@ -139,7 +151,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generate new response options if conversation continues
       let responseOptions: ResponseOption[] = [];
       if (!isComplete) {
-        responseOptions = await conversationAI.generateResponseOptions(scenario, finalMessages);
+        try {
+          responseOptions = await conversationAI.generateResponseOptions(scenario, finalMessages);
+        } catch (error) {
+          console.error('Error generating response options:', error);
+          // Provide fallback response options if generation fails
+          responseOptions = [
+            { approach: 'approach1', content: "I'd like to find a solution that works for both of us.", description: "Seeks resolution" },
+            { approach: 'approach2', content: "I need to be clear about my position on this matter.", description: "Creates tension" },
+            { approach: 'approach3', content: "Let me propose a specific next step we can take.", description: "Decisive action" }
+          ];
+        }
       }
 
       res.json({
