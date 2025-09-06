@@ -68,7 +68,7 @@ export default function SetupForm() {
           name="purpose"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Purpose</FormLabel>
+              <FormLabel>What type of conversation is this?</FormLabel>
               <FormControl>
                 <Input
                   placeholder="e.g., Negotiation, Conflict Resolution, Performance Review"
