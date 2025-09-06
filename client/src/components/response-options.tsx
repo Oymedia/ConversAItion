@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import type { ResponseOption, Conversation } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ResponseOptionsProps {
   options: ResponseOption[];
@@ -11,6 +14,8 @@ interface ResponseOptionsProps {
 }
 
 export default function ResponseOptions({ options, onSelect, isLoading, conversation }: ResponseOptionsProps) {
+  const [customResponse, setCustomResponse] = useState("");
+  const [showCustomInput, setShowCustomInput] = useState(false);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -36,6 +41,21 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
   const handleGoBack = () => {
     if (conversation.currentExchange > 1) {
       resetMutation.mutate(conversation.currentExchange - 1);
+    }
+  };
+
+  const handleCustomSubmit = () => {
+    if (customResponse.trim()) {
+      onSelect('custom', customResponse.trim());
+      setCustomResponse("");
+      setShowCustomInput(false);
+    }
+  };
+
+  const handleToggleCustomInput = () => {
+    setShowCustomInput(!showCustomInput);
+    if (!showCustomInput) {
+      setCustomResponse("");
     }
   };
 
