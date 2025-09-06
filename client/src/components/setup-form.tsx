@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { insertScenarioSchema } from "@shared/schema";
 import type { InsertScenario } from "@shared/schema";
+import { z } from "zod";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,8 +26,16 @@ export default function SetupForm() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
+  // Extended schema with required field validation and custom error messages
+  const requiredScenarioSchema = insertScenarioSchema.extend({
+    purpose: z.string().min(1, "Please specify what type of conversation this is"),
+    characterProfile: z.string().min(1, "Please describe the character you'll be talking to"),
+    topic: z.string().min(1, "Please describe the situation or topic"),
+    goal: z.string().min(1, "Please specify what you want to achieve"),
+  });
+
   const form = useForm<InsertScenario>({
-    resolver: zodResolver(insertScenarioSchema),
+    resolver: zodResolver(requiredScenarioSchema),
     defaultValues: {
       purpose: "",
       characterProfile: "",
