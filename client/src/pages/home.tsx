@@ -9,7 +9,7 @@ export default function Home() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary text-primary-foreground rounded-full mb-4">
             <i className="fas fa-brain text-2xl"></i>
           </div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">ConversAI</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2">ConversAItion</h1>
           <p className="text-muted-foreground text-lg">Practice real-life conversations through AI-powered simulations</p>
         </div>
         
