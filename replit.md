@@ -1,8 +1,8 @@
-# ConversAI - AI-Powered Conversation Practice Platform
+# ConversAItion - AI-Powered Conversation Practice Platform
 
 ## Overview
 
-ConversAI is a web application that enables users to practice real-life conversations through AI-powered simulations. Users can create custom conversation scenarios with specific characters, topics, and goals, then engage in interactive dialogues where an AI plays the role of the other party. The platform provides multiple response options with different communication approaches (diplomatic, assertive, empathetic) and tracks conversation progress with detailed feedback and analysis.
+ConversAItion is a web application that enables users to practice real-life conversations through AI-powered simulations. Users can create custom conversation scenarios with specific characters, topics, and goals, then engage in interactive dialogues where an AI plays the role of the other party. The platform provides multiple response options with different communication approaches (diplomatic, assertive, empathetic) and tracks conversation progress with detailed feedback and analysis.
 
 ## User Preferences
 
