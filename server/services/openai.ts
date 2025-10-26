@@ -131,7 +131,7 @@ Return as JSON in this exact format:
       .join('\n');
 
     const exchangeCount = conversationHistory.length;
-    const shouldConsiderEnding = exchangeCount >= 6; // Start considering ending after 3 full exchanges
+    const shouldConsiderEnding = exchangeCount >= 24; // Start considering ending after 12 full exchanges
     
     const characterTraits = scenario.characterProfile.join(', ');
     const situationContext = `
@@ -146,7 +146,7 @@ CHARACTER TRAITS YOU ARE PLAYING: ${characterTraits}
 SITUATION: ${situationContext}
 THE USER'S GOAL (not yours): ${scenario.goal}
 CONVERSATION PURPOSE: ${scenario.purpose}
-Current Exchange: ${Math.ceil(exchangeCount / 2)} of maximum 7
+Current Exchange: ${Math.ceil(exchangeCount / 2)} of maximum 15
 
 Conversation History:
 ${historyText}
@@ -208,7 +208,7 @@ Scenario Context:
 - Situation: ${situationContext}
 - User's Goal: ${scenario.goal}
 
-Conversation History (Exchange ${exchangeCount} of max 7):
+Conversation History (Exchange ${exchangeCount} of max 15):
 ${historyText}
 
 Determine if this conversation has reached a natural conclusion point. A conversation should end if:
