@@ -14,7 +14,8 @@ export class ConversationAI {
       const situationContext = `
 Core Issue: ${scenario.coreIssue}
 Your Stance: ${scenario.otherStance}
-User's Stance: ${scenario.userStance}${scenario.backgroundStory ? `\nBackground: ${scenario.backgroundStory}` : ''}`;
+User's Stance: ${scenario.userStance}
+Relationship: ${scenario.relationship}${scenario.backgroundStory ? `\nBackground: ${scenario.backgroundStory}` : ''}`;
 
       const prompt = `CRITICAL: You are roleplaying as a specific character. You are NOT the user. You are the OTHER person in this conversation.
 
@@ -25,6 +26,7 @@ CONVERSATION PURPOSE: ${scenario.purpose}
 
 REMEMBER:
 - YOU are the character with these traits: ${characterTraits}
+- Your relationship with the user is: ${scenario.relationship}
 - The USER is someone else trying to achieve their goal
 - NEVER speak as the user or adopt their perspective
 - Stay true to your character's personality, motivations, and interests
@@ -61,7 +63,8 @@ Return only the character's opening message, no additional formatting.`;
     const situationContext = `
 Core Issue: ${scenario.coreIssue}
 User's Stance: ${scenario.userStance}
-Other Person's Stance: ${scenario.otherStance}${scenario.backgroundStory ? `\nBackground: ${scenario.backgroundStory}` : ''}`;
+Other Person's Stance: ${scenario.otherStance}
+Relationship: ${scenario.relationship}${scenario.backgroundStory ? `\nBackground: ${scenario.backgroundStory}` : ''}`;
 
     const prompt = `You are helping a user practice a conversation simulation.
 
@@ -134,7 +137,8 @@ Return as JSON in this exact format:
     const situationContext = `
 Core Issue: ${scenario.coreIssue}
 Your Stance: ${scenario.otherStance}
-User's Stance: ${scenario.userStance}${scenario.backgroundStory ? `\nBackground: ${scenario.backgroundStory}` : ''}`;
+User's Stance: ${scenario.userStance}
+Relationship: ${scenario.relationship}${scenario.backgroundStory ? `\nBackground: ${scenario.backgroundStory}` : ''}`;
 
     const prompt = `CRITICAL: You are roleplaying as a specific character. You are NOT the user. You are the OTHER person in this conversation.
 
@@ -149,6 +153,7 @@ ${historyText}
 
 REMEMBER: 
 - YOU are the character with these traits: ${characterTraits}
+- Your relationship with the user is: ${scenario.relationship}
 - The USER is the other person trying to achieve their goal
 - NEVER speak as if you are the user
 - NEVER adopt the user's perspective or goals as your own
@@ -192,7 +197,8 @@ Respond ONLY as the character (not the user), no additional formatting.`;
     const situationContext = `
 Core Issue: ${scenario.coreIssue}
 User's Stance: ${scenario.userStance}
-Other Person's Stance: ${scenario.otherStance}${scenario.backgroundStory ? `\nBackground: ${scenario.backgroundStory}` : ''}`;
+Other Person's Stance: ${scenario.otherStance}
+Relationship: ${scenario.relationship}${scenario.backgroundStory ? `\nBackground: ${scenario.backgroundStory}` : ''}`;
 
     const prompt = `Analyze this conversation to determine if it should naturally conclude.
 
@@ -254,7 +260,8 @@ Return JSON in this exact format:
     const situationContext = `
 Core Issue: ${scenario.coreIssue}
 User's Stance: ${scenario.userStance}
-Other Person's Stance: ${scenario.otherStance}${scenario.backgroundStory ? `\nBackground: ${scenario.backgroundStory}` : ''}`;
+Other Person's Stance: ${scenario.otherStance}
+Relationship: ${scenario.relationship}${scenario.backgroundStory ? `\nBackground: ${scenario.backgroundStory}` : ''}`;
 
     const prompt = `Analyze this conversation simulation and provide an evaluation.
 

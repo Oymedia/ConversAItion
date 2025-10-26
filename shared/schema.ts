@@ -17,6 +17,7 @@ export const scenarios = pgTable("scenarios", {
   coreIssue: text("core_issue").notNull(),
   userStance: text("user_stance").notNull(),
   otherStance: text("other_stance").notNull(),
+  relationship: text("relationship").notNull(),
   backgroundStory: text("background_story"),
   goal: text("goal").notNull(),
   createdAt: timestamp("created_at").defaultNow(),

@@ -50,6 +50,7 @@ export default function SetupForm() {
     coreIssue: z.string().min(1, "Please explain the core issue"),
     userStance: z.string().min(1, "Please describe your stance"),
     otherStance: z.string().min(1, "Please describe the other person's stance"),
+    relationship: z.string().min(1, "Please describe your relationship with this person"),
     backgroundStory: z.string().optional(),
     goal: z.string().min(1, "Please specify what you want to achieve"),
   });
@@ -62,6 +63,7 @@ export default function SetupForm() {
       coreIssue: "",
       userStance: "",
       otherStance: "",
+      relationship: "",
       backgroundStory: "",
       goal: "",
     },
@@ -103,11 +105,11 @@ export default function SetupForm() {
               <FormLabel>What type of conversation is this?</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger data-testid="select-purpose">
+                  <SelectTrigger data-testid="select-purpose" className="bg-background text-foreground">
                     <SelectValue placeholder="Select conversation type" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
+                <SelectContent className="bg-background">
                   <SelectItem value="Negotiation">Negotiation</SelectItem>
                   <SelectItem value="Conflict resolution">Conflict resolution</SelectItem>
                   <SelectItem value="Pitching to a customer">Pitching to a customer</SelectItem>
@@ -238,6 +240,29 @@ export default function SetupForm() {
               </FormControl>
               <FormDescription>
                 What is the other person's perspective or position?
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Relationship */}
+        <FormField
+          control={form.control}
+          name="relationship"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>What is your relationship with conversing person?</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Describe your relationship (e.g., colleague, manager, client, friend, family member)..."
+                  rows={2}
+                  {...field}
+                  data-testid="textarea-relationship"
+                />
+              </FormControl>
+              <FormDescription>
+                How would you describe your relationship with this person?
               </FormDescription>
               <FormMessage />
             </FormItem>
