@@ -134,6 +134,29 @@ export default function SetupForm() {
           )}
         />
 
+        {/* Relationship */}
+        <FormField
+          control={form.control}
+          name="relationship"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>What is your relationship with conversing person?</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Describe your relationship (e.g., colleague, manager, client, friend, family member)..."
+                  rows={2}
+                  {...field}
+                  data-testid="textarea-relationship"
+                />
+              </FormControl>
+              <FormDescription>
+                How would you describe your relationship with this person?
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {/* Character Profile - Checkboxes */}
         <FormField
           control={form.control}
@@ -250,29 +273,6 @@ export default function SetupForm() {
               </FormControl>
               <FormDescription>
                 What is the other person's perspective or position?
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Relationship */}
-        <FormField
-          control={form.control}
-          name="relationship"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>What is your relationship with conversing person?</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Describe your relationship (e.g., colleague, manager, client, friend, family member)..."
-                  rows={2}
-                  {...field}
-                  data-testid="textarea-relationship"
-                />
-              </FormControl>
-              <FormDescription>
-                How would you describe your relationship with this person?
               </FormDescription>
               <FormMessage />
             </FormItem>
