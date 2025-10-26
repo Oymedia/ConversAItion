@@ -10,18 +10,25 @@ export class ConversationAI {
   
   async generateInitialMessage(scenario: Scenario): Promise<string> {
     try {
+      const characterTraits = scenario.characterProfile.join(', ');
+      const situationContext = `
+Core Issue: ${scenario.coreIssue}
+Your Stance: ${scenario.otherStance}
+User's Stance: ${scenario.userStance}${scenario.backgroundStory ? `\nBackground: ${scenario.backgroundStory}` : ''}`;
+
       const prompt = `CRITICAL: You are roleplaying as a specific character. You are NOT the user. You are the OTHER person in this conversation.
 
-CHARACTER YOU ARE PLAYING: ${scenario.characterProfile}
-SITUATION: ${scenario.topic}
+CHARACTER TRAITS YOU ARE PLAYING: ${characterTraits}
+SITUATION: ${situationContext}
 THE USER'S GOAL (not yours): ${scenario.goal}
 CONVERSATION PURPOSE: ${scenario.purpose}
 
 REMEMBER:
-- YOU are the character described in the profile
+- YOU are the character with these traits: ${characterTraits}
 - The USER is someone else trying to achieve their goal
 - NEVER speak as the user or adopt their perspective
 - Stay true to your character's personality, motivations, and interests
+- Your stance on the issue is: ${scenario.otherStance}
 
 As this specific character, start the conversation naturally based on the situation. The user wants to practice this conversation with you, so be realistic and stay in character. Respond as the character would in this situation.
 
@@ -49,13 +56,19 @@ Return only the character's opening message, no additional formatting.`;
     const historyText = conversationHistory
       .map(msg => `${msg.type.toUpperCase()}: ${msg.content}`)
       .join('\n');
+    
+    const characterTraits = scenario.characterProfile.join(', ');
+    const situationContext = `
+Core Issue: ${scenario.coreIssue}
+User's Stance: ${scenario.userStance}
+Other Person's Stance: ${scenario.otherStance}${scenario.backgroundStory ? `\nBackground: ${scenario.backgroundStory}` : ''}`;
 
     const prompt = `You are helping a user practice a conversation simulation.
 
 Scenario Context:
 - Purpose: ${scenario.purpose}
-- Character Profile: ${scenario.characterProfile}
-- Situation: ${scenario.topic}
+- Character Traits: ${characterTraits}
+- Situation: ${situationContext}
 - User's Goal: ${scenario.goal}
 
 Conversation History:
@@ -116,11 +129,17 @@ Return as JSON in this exact format:
 
     const exchangeCount = conversationHistory.length;
     const shouldConsiderEnding = exchangeCount >= 6; // Start considering ending after 3 full exchanges
+    
+    const characterTraits = scenario.characterProfile.join(', ');
+    const situationContext = `
+Core Issue: ${scenario.coreIssue}
+Your Stance: ${scenario.otherStance}
+User's Stance: ${scenario.userStance}${scenario.backgroundStory ? `\nBackground: ${scenario.backgroundStory}` : ''}`;
 
     const prompt = `CRITICAL: You are roleplaying as a specific character. You are NOT the user. You are the OTHER person in this conversation.
 
-CHARACTER YOU ARE PLAYING: ${scenario.characterProfile}
-SITUATION: ${scenario.topic}  
+CHARACTER TRAITS YOU ARE PLAYING: ${characterTraits}
+SITUATION: ${situationContext}
 THE USER'S GOAL (not yours): ${scenario.goal}
 CONVERSATION PURPOSE: ${scenario.purpose}
 Current Exchange: ${Math.ceil(exchangeCount / 2)} of maximum 7
@@ -129,11 +148,12 @@ Conversation History:
 ${historyText}
 
 REMEMBER: 
-- YOU are the character described in the profile
+- YOU are the character with these traits: ${characterTraits}
 - The USER is the other person trying to achieve their goal
 - NEVER speak as if you are the user
 - NEVER adopt the user's perspective or goals as your own
 - Stay consistent with your character's personality and motivations
+- Your stance on the issue is: ${scenario.otherStance}
 
 The user just responded using a ${userApproach} approach. As the CHARACTER (not as the user), respond naturally to their message.
 
@@ -167,13 +187,19 @@ Respond ONLY as the character (not the user), no additional formatting.`;
     const historyText = conversationHistory
       .map(msg => `${msg.type.toUpperCase()}: ${msg.content}`)
       .join('\n');
+    
+    const characterTraits = scenario.characterProfile.join(', ');
+    const situationContext = `
+Core Issue: ${scenario.coreIssue}
+User's Stance: ${scenario.userStance}
+Other Person's Stance: ${scenario.otherStance}${scenario.backgroundStory ? `\nBackground: ${scenario.backgroundStory}` : ''}`;
 
     const prompt = `Analyze this conversation to determine if it should naturally conclude.
 
 Scenario Context:
 - Purpose: ${scenario.purpose}
-- Character Profile: ${scenario.characterProfile}
-- Topic: ${scenario.topic}
+- Character Traits: ${characterTraits}
+- Situation: ${situationContext}
 - User's Goal: ${scenario.goal}
 
 Conversation History (Exchange ${exchangeCount} of max 7):
@@ -223,13 +249,19 @@ Return JSON in this exact format:
     const historyText = conversationHistory
       .map(msg => `${msg.type.toUpperCase()}: ${msg.content}`)
       .join('\n');
+    
+    const characterTraits = scenario.characterProfile.join(', ');
+    const situationContext = `
+Core Issue: ${scenario.coreIssue}
+User's Stance: ${scenario.userStance}
+Other Person's Stance: ${scenario.otherStance}${scenario.backgroundStory ? `\nBackground: ${scenario.backgroundStory}` : ''}`;
 
     const prompt = `Analyze this conversation simulation and provide an evaluation.
 
 Original Goal: ${scenario.goal}
 Purpose: ${scenario.purpose}
-Character Profile: ${scenario.characterProfile}
-Situation: ${scenario.topic}
+Character Traits: ${characterTraits}
+Situation: ${situationContext}
 
 Full Conversation:
 ${historyText}

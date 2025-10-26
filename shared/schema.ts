@@ -13,8 +13,11 @@ export const scenarios = pgTable("scenarios", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id"),
   purpose: text("purpose").notNull(),
-  characterProfile: text("character_profile").notNull(),
-  topic: text("topic").notNull(),
+  characterProfile: text("character_profile").array().notNull(),
+  coreIssue: text("core_issue").notNull(),
+  userStance: text("user_stance").notNull(),
+  otherStance: text("other_stance").notNull(),
+  backgroundStory: text("background_story"),
   goal: text("goal").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
