@@ -105,15 +105,25 @@ export default function SetupForm() {
               <FormLabel>What type of conversation is this?</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger data-testid="select-purpose" className="bg-background text-foreground">
+                  <SelectTrigger data-testid="select-purpose" className="bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-600">
                     <SelectValue placeholder="Select conversation type" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent className="bg-background">
+                <SelectContent className="bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-600">
                   <SelectItem value="Negotiation">Negotiation</SelectItem>
                   <SelectItem value="Conflict resolution">Conflict resolution</SelectItem>
                   <SelectItem value="Pitching to a customer">Pitching to a customer</SelectItem>
                   <SelectItem value="Proposal">Proposal</SelectItem>
+                  <SelectItem value="Relationship Management">Relationship Management</SelectItem>
+                  <SelectItem value="Feedback">Feedback</SelectItem>
+                  <SelectItem value="Press Release">Press Release</SelectItem>
+                  <SelectItem value="Critique/Review">Critique/Review</SelectItem>
+                  <SelectItem value="Crisis Management">Crisis Management</SelectItem>
+                  <SelectItem value="Discovery">Discovery</SelectItem>
+                  <SelectItem value="Interrogation/Audit">Interrogation/Audit</SelectItem>
+                  <SelectItem value="Arbitration">Arbitration</SelectItem>
+                  <SelectItem value="Debate">Debate</SelectItem>
+                  <SelectItem value="Mandate">Mandate</SelectItem>
                 </SelectContent>
               </Select>
               <FormDescription>
