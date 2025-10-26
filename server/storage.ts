@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Scenario, type InsertScenario, type Conversation, type InsertConversation, type ConversationMessage } from "@shared/schema";
+import { type User, type InsertUser, type Scenario, type InsertScenario, type Conversation, type InsertConversation, type ConversationMessage, type ConversationOutcome } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -46,7 +46,8 @@ export class MemStorage implements IStorage {
   async createScenario(insertScenario: InsertScenario): Promise<Scenario> {
     const id = randomUUID();
     const scenario: Scenario = { 
-      ...insertScenario, 
+      ...insertScenario,
+      backgroundStory: insertScenario.backgroundStory || null,
       id, 
       userId: insertScenario.userId || null,
       createdAt: new Date() 
@@ -62,9 +63,12 @@ export class MemStorage implements IStorage {
   async createConversation(insertConversation: InsertConversation): Promise<Conversation> {
     const id = randomUUID();
     const conversation: Conversation = {
-      ...insertConversation,
+      scenarioId: insertConversation.scenarioId,
       id,
       messages: (insertConversation.messages as ConversationMessage[]) || [],
+      currentExchange: insertConversation.currentExchange ?? 0,
+      isComplete: insertConversation.isComplete ?? 0,
+      outcome: (insertConversation.outcome as ConversationOutcome) ?? null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

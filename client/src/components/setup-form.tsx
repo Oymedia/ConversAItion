@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import {
   Form,
@@ -21,6 +22,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const CHARACTER_TRAITS = [
+  "Short-tempered", "Cunning", "Obedient", "Nice", "Patient", "Aggressive",
+  "Empathetic", "Analytical", "Creative", "Stubborn", "Flexible", "Confident",
+  "Insecure", "Arrogant", "Humble", "Optimistic", "Pessimistic", "Rational",
+  "Emotional", "Direct", "Indirect", "Assertive", "Passive", "Diplomatic",
+  "Blunt", "Supportive", "Critical", "Open-minded", "Close-minded", "Enthusiastic",
+  "Reserved", "Friendly", "Cold", "Competitive", "Cooperative"
+] as const;
 
 export default function SetupForm() {
   const [, setLocation] = useLocation();
@@ -28,9 +45,12 @@ export default function SetupForm() {
 
   // Extended schema with required field validation and custom error messages
   const requiredScenarioSchema = insertScenarioSchema.extend({
-    purpose: z.string().min(1, "Please specify what type of conversation this is"),
-    characterProfile: z.string().min(1, "Please describe the character you'll be talking to"),
-    topic: z.string().min(1, "Please describe the situation or topic"),
+    purpose: z.string().min(1, "Please select a conversation type"),
+    characterProfile: z.array(z.string()).min(1, "Please select at least one character trait"),
+    coreIssue: z.string().min(1, "Please explain the core issue"),
+    userStance: z.string().min(1, "Please describe your stance"),
+    otherStance: z.string().min(1, "Please describe the other person's stance"),
+    backgroundStory: z.string().optional(),
     goal: z.string().min(1, "Please specify what you want to achieve"),
   });
 
@@ -38,8 +58,11 @@ export default function SetupForm() {
     resolver: zodResolver(requiredScenarioSchema),
     defaultValues: {
       purpose: "",
-      characterProfile: "",
-      topic: "",
+      characterProfile: [],
+      coreIssue: "",
+      userStance: "",
+      otherStance: "",
+      backgroundStory: "",
       goal: "",
     },
   });
@@ -71,68 +94,174 @@ export default function SetupForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" data-testid="form-scenario-setup">
-        {/* Purpose Field */}
+        {/* Conversation Type Dropdown */}
         <FormField
           control={form.control}
           name="purpose"
           render={({ field }) => (
             <FormItem>
               <FormLabel>What type of conversation is this?</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="e.g., Negotiation, Conflict Resolution, Performance Review"
-                  {...field}
-                  data-testid="input-purpose"
-                />
-              </FormControl>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger data-testid="select-purpose">
+                    <SelectValue placeholder="Select conversation type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="Negotiation">Negotiation</SelectItem>
+                  <SelectItem value="Conflict resolution">Conflict resolution</SelectItem>
+                  <SelectItem value="Pitching to a customer">Pitching to a customer</SelectItem>
+                  <SelectItem value="Proposal">Proposal</SelectItem>
+                </SelectContent>
+              </Select>
               <FormDescription>
-                What type of conversation are you practicing?
+                Select the type of conversation you're practicing
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {/* Character Profile */}
+        {/* Character Profile - Checkboxes */}
         <FormField
           control={form.control}
           name="characterProfile"
+          render={() => (
+            <FormItem>
+              <div className="mb-4">
+                <FormLabel>Character Profile</FormLabel>
+                <FormDescription>
+                  Select the traits that describe the person you'll be talking to
+                </FormDescription>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" data-testid="checkbox-group-character-profile">
+                {CHARACTER_TRAITS.map((trait) => (
+                  <FormField
+                    key={trait}
+                    control={form.control}
+                    name="characterProfile"
+                    render={({ field }) => {
+                      return (
+                        <FormItem
+                          key={trait}
+                          className="flex flex-row items-start space-x-2 space-y-0"
+                        >
+                          <FormControl>
+                            <Checkbox
+                              data-testid={`checkbox-trait-${trait.toLowerCase().replace(/\s+/g, '-')}`}
+                              checked={field.value?.includes(trait)}
+                              onCheckedChange={(checked) => {
+                                return checked
+                                  ? field.onChange([...field.value, trait])
+                                  : field.onChange(
+                                      field.value?.filter(
+                                        (value) => value !== trait
+                                      )
+                                    );
+                              }}
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-normal cursor-pointer">
+                            {trait}
+                          </FormLabel>
+                        </FormItem>
+                      );
+                    }}
+                  />
+                ))}
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Core Issue */}
+        <FormField
+          control={form.control}
+          name="coreIssue"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Character Profile (Provide as much details as possible for optimum experience)</FormLabel>
+              <FormLabel>Explain the core issue in the conversation</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Describe the personality, communication style, and traits of the person you'll be talking to..."
+                  placeholder="Describe the main problem or topic that needs to be addressed..."
                   rows={3}
                   {...field}
-                  data-testid="textarea-character-profile"
+                  data-testid="textarea-core-issue"
                 />
               </FormControl>
               <FormDescription>
-                How would you describe the person you need to have this conversation with?
+                What is the central issue or topic of this conversation?
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {/* Topic/Situation */}
+        {/* User Stance */}
         <FormField
           control={form.control}
-          name="topic"
+          name="userStance"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Topic & Situation (Provide as much details as possible for optimum experience)</FormLabel>
+              <FormLabel>What is your stance on the topic?</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Describe the specific situation or topic you need to discuss..."
-                  rows={3}
+                  placeholder="Describe your position, opinion, or perspective on this issue..."
+                  rows={2}
                   {...field}
-                  data-testid="textarea-topic"
+                  data-testid="textarea-user-stance"
                 />
               </FormControl>
               <FormDescription>
-                What specific situation do you need to navigate?
+                What is your perspective or position on this issue?
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Other Person's Stance */}
+        <FormField
+          control={form.control}
+          name="otherStance"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>What is the conversing person's stance on the topic?</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Describe the other person's position, opinion, or perspective..."
+                  rows={2}
+                  {...field}
+                  data-testid="textarea-other-stance"
+                />
+              </FormControl>
+              <FormDescription>
+                What is the other person's perspective or position?
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Background Story (Optional) */}
+        <FormField
+          control={form.control}
+          name="backgroundStory"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Background story to the conversation (Optional)</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Any relevant history or context leading up to this conversation..."
+                  rows={3}
+                  {...field}
+                  value={field.value || ""}
+                  data-testid="textarea-background-story"
+                />
+              </FormControl>
+              <FormDescription>
+                Provide any relevant background or history if applicable
               </FormDescription>
               <FormMessage />
             </FormItem>
