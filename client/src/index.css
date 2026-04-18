@@ -4,7 +4,7 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(0 0% 94.12%);
+  --background: hsl(0 0% 100%);
   --foreground: hsl(0 0% 10.2%);
   --card: hsl(0 0% 98.82%);
   --card-foreground: hsl(0, 0%, 0%);
@@ -142,4 +142,178 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* ===== MOBILE LAYOUT ===== */
+@media (max-width: 768px) {
+  .desktop-panel { display: none !important; }
+
+  .conversation-layout {
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: calc(100vh - 58px);
+    overflow-y: auto !important;
+  }
+
+  /* Chat takes natural height */
+  .conversation-layout > .flex-1 {
+    height: auto !important;
+    min-height: 60vh;
+  }
+
+  /* Response options - full width stacked */
+  .lg\:hidden {
+    display: block !important;
+  }
+
+  /* Response options container */
+  .response-options-mobile {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    gap: 10px !important;
+    padding: 8px 12px !important;
+    scrollbar-width: none !important;
+    align-items: stretch !important;
+  }
+
+  .response-options-mobile::-webkit-scrollbar { display: none !important; }
+
+  /* Each card fixed width so they scroll horizontally */
+  .response-option-card {
+    min-width: 260px !important;
+    max-width: 260px !important;
+    flex-shrink: 0 !important;
+    height: auto !important;
+  }
+}
+
+/* Results page full width on mobile */
+@media (max-width: 768px) {
+  .max-w-4xl {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .max-w-4xl > div {
+    border-radius: 0 !important;
+    padding: 16px !important;
+  }
+}
+
+/* Mobile results page alignment fixes */
+@media (max-width: 768px) {
+  .star-btn {
+    padding: 0 4px !important;
+  }
+  #submit-feedback-btn {
+    width: 100% !important;
+    border-radius: 50px !important;
+  }
+  #feedback-msg {
+    text-align: center !important;
+  }
+  #feedback-text {
+    width: 100% !important;
+  }
+}
+
+/* Fix button heights on mobile */
+@media (max-width: 768px) {
+  #submit-feedback-btn {
+    height: 52px !important;
+    padding: 0 32px !important;
+  }
+}
+
+/* Mobile intro page fixes */
+@media (max-width: 768px) {
+  .sf-step {
+    padding: 0 16px !important;
+  }
+  .sf-step h1 {
+    font-size: 26px !important;
+    line-height: 1.2 !important;
+  }
+  .sf-step > div > div[style*="display: flex"][style*="gap: 16px"] {
+    flex-direction: column !important;
+    overflow-x: visible !important;
+    gap: 12px !important;
+  }
+  .sf-step > div > div[style*="display: flex"][style*="gap: 16px"] > div {
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Mobile results - full white no card */
+@media (max-width: 768px) {
+  .max-w-4xl { max-width: 100% !important; padding: 0 !important; }
+  .max-w-4xl > .bg-card { border-radius: 0 !important; border: none !important; box-shadow: none !important; padding: 16px !important; }
+  .min-h-screen[style*="background"] { background: #ffffff !important; }
+}
+
+/* Desktop chat bubble max width fix */
+@media (min-width: 769px) {
+  .flex-1.max-w-md {
+    max-width: 560px !important;
+  }
+}
+
+/* Desktop chat bubble wider */
+@media (min-width: 769px) {
+  .flex-1.max-w-md {
+    max-width: 680px !important;
+  }
+}
+
+/* Strong mobile results override */
+@media (max-width: 768px) {
+  div.max-w-4xl.mx-auto {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  div.bg-card.rounded-xl.shadow-lg {
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 16px !important;
+  }
+}
+
+/* Equal button heights */
+#submit-feedback-btn,
+[data-testid="button-start-new"],
+[data-testid="button-export-results"] {
+  height: 52px !important;
+  padding: 0 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Match submit feedback button size to other buttons */
+#submit-feedback-btn {
+  height: auto !important;
+  padding: 12px 24px !important;
+  font-size: 14px !important;
+}
+
+/* Mobile setup form card text size */
+@media (max-width: 768px) {
+  .sf-step p, .sf-step span {
+    font-size: 16px !important;
+  }
 }

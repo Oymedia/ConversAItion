@@ -63,27 +63,27 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
     switch (approach) {
       case 'approach1':
         return {
-          container: "bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 hover:border-blue-300 focus:ring-blue-500",
+          container: "bg-blue-50 hover:bg-blue-100 border border-blue-200 hover:border-blue-300 focus:ring-blue-400 shadow-sm hover:shadow-md",
           icon: "bg-blue-500 text-white",
           title: "text-blue-900",
           subtitle: "text-blue-600",
-          content: "text-blue-800"
+          content: "text-gray-700"
         };
       case 'approach2':
         return {
-          container: "bg-orange-50 hover:bg-orange-100 border-2 border-orange-200 hover:border-orange-300 focus:ring-orange-500",
+          container: "bg-orange-50 hover:bg-orange-100 border border-orange-200 hover:border-orange-300 focus:ring-orange-400 shadow-sm hover:shadow-md",
           icon: "bg-orange-500 text-white",
-          title: "text-orange-900", 
+          title: "text-orange-900",
           subtitle: "text-orange-600",
-          content: "text-orange-800"
+          content: "text-gray-700"
         };
       case 'approach3':
         return {
-          container: "bg-green-50 hover:bg-green-100 border-2 border-green-200 hover:border-green-300 focus:ring-green-500",
+          container: "bg-green-50 hover:bg-green-100 border border-green-200 hover:border-green-300 focus:ring-green-400 shadow-sm hover:shadow-md",
           icon: "bg-green-500 text-white",
           title: "text-green-900",
-          subtitle: "text-green-600", 
-          content: "text-green-800"
+          subtitle: "text-green-600",
+          content: "text-gray-700"
         };
       default:
         return {
@@ -110,12 +110,12 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
   };
 
   return (
-    <div className="flex flex-col h-full p-4">
+    <div className="flex flex-col h-full p-4" style={{ height: "100%", background: "#ffffff" }}>
       <div className="text-center mb-4">
         <p className="text-sm text-muted-foreground">Choose your response approach:</p>
       </div>
       
-      <div className="flex-1 space-y-3 overflow-y-auto pr-2">
+      <div className="response-options-mobile" style={{ overflowY: "auto", scrollbarWidth: "none", msOverflowStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
           {options.map((option) => {
             const styles = getApproachStyles(option.approach);
             const icon = getApproachIcon(option.approach);
@@ -123,7 +123,7 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
             return (
               <button
                 key={option.approach}
-                className={`response-option ${styles.container} rounded-xl p-3 text-left transition-all focus:ring-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed w-full break-words block`}
+                className={`response-option-card response-option ${styles.container} rounded-xl p-3 text-left transition-all focus:ring-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed w-full break-words block`}
                 onClick={() => onSelect(option.approach, option.content)}
                 disabled={isLoading}
                 data-testid={`button-response-${option.approach}`}
@@ -147,56 +147,57 @@ export default function ResponseOptions({ options, onSelect, isLoading, conversa
             );
           })}
           
-          {/* Custom Response Section */}
-          <div className="mt-4 space-y-3">
-            <div className="text-center">
-              <button
-                onClick={handleToggleCustomInput}
-                disabled={isLoading}
-                className="text-sm text-muted-foreground hover:text-foreground underline disabled:opacity-50"
-                data-testid="button-toggle-custom"
-              >
-                {showCustomInput ? "Hide custom response" : "Write your own response"}
-              </button>
-            </div>
-            
-            {showCustomInput && (
-              <div className="space-y-3 p-3 bg-gray-50 rounded-lg border">
-                <Textarea
-                  placeholder="Type your own response..."
-                  value={customResponse}
-                  onChange={(e) => setCustomResponse(e.target.value)}
-                  disabled={isLoading}
-                  rows={3}
-                  className="resize-none"
-                  data-testid="textarea-custom-response"
-                />
-                <div className="flex gap-2">
-                  <Button
-                    onClick={handleCustomSubmit}
-                    disabled={isLoading || !customResponse.trim()}
-                    className="flex-1"
-                    data-testid="button-submit-custom"
-                  >
-                    Send Custom Response
-                  </Button>
-                  <Button
-                    onClick={handleToggleCustomInput}
-                    variant="outline"
-                    disabled={isLoading}
-                    data-testid="button-cancel-custom"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
         </div>
-        
-        {/* Back Button */}
+
+        {/* Custom Response Section - below scroll */}
+        <div className="mt-3 px-2 space-y-3">
+          <div className="text-center">
+            <button
+              onClick={handleToggleCustomInput}
+              disabled={isLoading}
+              className="text-sm text-muted-foreground hover:text-foreground underline disabled:opacity-50"
+              data-testid="button-toggle-custom"
+            >
+              {showCustomInput ? "Hide custom response" : "Write your own response"}
+            </button>
+          </div>
+          
+          {showCustomInput && (
+            <div className="space-y-3 p-3 bg-gray-50 rounded-lg border">
+              <Textarea
+                placeholder="Type your own response..."
+                value={customResponse}
+                onChange={(e) => setCustomResponse(e.target.value)}
+                disabled={isLoading}
+                rows={3}
+                className="resize-none"
+                data-testid="textarea-custom-response"
+              />
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleCustomSubmit}
+                  disabled={isLoading || !customResponse.trim()}
+                  className="flex-1"
+                  data-testid="button-submit-custom"
+                >
+                  Send Custom Response
+                </Button>
+                <Button
+                  onClick={handleToggleCustomInput}
+                  variant="outline"
+                  disabled={isLoading}
+                  data-testid="button-cancel-custom"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Back Button - below scroll */}
         {conversation.currentExchange > 1 && (
-          <div className="mt-4 text-center">
+          <div className="mt-3 text-center pb-2">
             <button
               className="text-muted-foreground hover:text-foreground text-sm inline-flex items-center space-x-1 hover:underline disabled:opacity-50"
               onClick={handleGoBack}

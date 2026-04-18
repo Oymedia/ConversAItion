@@ -20,9 +20,9 @@ export default function ChatInterface({ conversation, scenario, responseOptions,
   }, [conversation.messages]);
 
   return (
-    <main className="flex-1 flex flex-col">
+    <main style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0, overflow: "hidden" }}>
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4" data-testid="messages-container">
+      <div style={{ flex: 1, overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 16, minHeight: 0, scrollbarWidth: "none", msOverflowStyle: "none" }} data-testid="messages-container">
         {conversation.messages.map((message) => (
           <div
             key={message.id}

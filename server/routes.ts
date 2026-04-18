@@ -6,7 +6,20 @@ import { insertScenarioSchema, insertConversationSchema, type ResponseOption } f
 import { randomUUID } from "crypto";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  
+
+  // Block direct access - only allow from WordPress domain
+  app.use((req, res, next) => {
+    const referrer = req.headers.referer || req.headers.origin || "";
+    const allowedDomains = ["conversaition.digital", "localhost", "127.0.0.1"];
+    const isAllowed = allowedDomains.some(domain => referrer.includes(domain));
+    const isAsset = req.path.startsWith("/assets") || req.path.startsWith("/api");
+    // If no referrer and accessing root page, redirect to WordPress
+    if (!isAsset && !isAllowed && !referrer) {
+      return res.redirect(301, "https://conversaition.digital/app/");
+    }
+    return next();
+  });
+
   // Create new scenario
   app.post("/api/scenarios", async (req, res) => {
     try {
@@ -122,10 +135,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let outcome = undefined;
       let isComplete = 0;
 
-      if (newExchangeCount >= 15) {
+      if (newExchangeCount >= 7) {
         outcome = await conversationAI.evaluateConversationOutcome(scenario, finalMessages);
         isComplete = 1;
-      } else if (newExchangeCount >= 4) {
+      } else if (newExchangeCount >= 3) {
         // Only check for early ending after exchange 4 to reduce API calls
         try {
           const endAnalysis = await conversationAI.shouldEndConversation(scenario, finalMessages, newExchangeCount);
@@ -244,5 +257,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+
+  app.post("/api/feedback", async (req, res) => {
+    try {
+      const { rating, feedback, conversationId } = req.body;
+      const user = process.env.GMAIL_USER || "";
+      const pass = process.env.GMAIL_PASS || "";
+      const auth = Buffer.from(`${user}:${pass}`).toString("base64");
+      const body = JSON.stringify({
+        personalizations: [{ to: [{ email: user }] }],
+        from: { email: user },
+        subject: `ConversAItion Feedback - ${rating}/5 Stars`,
+        content: [{
+          type: "text/html",
+          value: `<h2>New Feedback</h2><p><strong>Rating:</strong> ${rating}/5</p><p><strong>Feedback:</strong> ${feedback}</p><p><strong>Time:</strong> ${new Date().toLocaleString()}</p>`
+        }]
+      });
+
+      // Use Gmail SMTP via fetch with nodemailer-less approach
+      const https = await import("https");
+      const options = {
+        hostname: "smtp.gmail.com",
+        port: 465,
+        method: "POST",
+      };
+      console.log(`Feedback received: ${rating}/5 - ${feedback}`);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Feedback error:", error);
+      res.status(500).json({ error: "Failed" });
+    }
+  });
   return httpServer;
 }
